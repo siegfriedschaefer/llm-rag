@@ -18,7 +18,7 @@ with st.sidebar:
     )
 
     st.header("Example Questions")
-    st.markdown("- Wer war Perry Rhodan?")
+    st.markdown("- Who is Perry Rhodan?")
 
 
 st.title("Nexus")
@@ -35,18 +35,20 @@ for message in st.session_state.messages:
 
 #    print(message)
 
+    avatar = user_avatar
+
     role = message["role"]
 
-    with st.chat_message(role, avatar=user_avatar):
+    if role != "user":
+        avatar = "assistant"
+
+    with st.chat_message(role, avatar=avatar):
         if "output" in message.keys():
             st.markdown( message["output"])
 
-        if "explanation" in message.keys():
-            with st.status("How was this generated", state="complete"):
-                st.info(message["explanation"])
-
-    with st.chat_message(role, avatar="assistant"):
-        st.write('Hello there!')
+#        if "explanation" in message.keys():
+#            with st.status("How was this generated", state="complete"):
+#                st.info(message["explanation"])
 
 if prompt := st.chat_input("What do you want to know?"):
     st.chat_message('user', avatar=user_avatar).markdown(prompt)
@@ -59,8 +61,8 @@ if prompt := st.chat_input("What do you want to know?"):
 
 #        response = requests.post(CHATBOT_API, json=data)
 
-        output_text = """At this stage of my development am not connected to any Generative AI companion. Stay tunded!"""
-        explanation = output_text
+        output_text = """At this stage of my development am not connected to any Generative AI assistant. Stay tunded!"""
+        explanation = ''
 
         st.chat_message("assistant").markdown(output_text)
 
