@@ -48,7 +48,7 @@ human_messages = {
 }
 
 TEST_LANGUAGE = "en"
-TEST_MESSAGE_INDEX = 2
+TEST_MESSAGE_INDEX = 1
 
 messages = [
     SystemMessage(content=system_messages[TEST_LANGUAGE][TEST_MESSAGE_INDEX]),
