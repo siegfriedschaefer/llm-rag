@@ -37,7 +37,11 @@ async def response_generator(query):
 
 """
 This is the FastAPI part of the code that is run when the script is run as a service.
-Run it with the command fastapi run app.py
+
+Run it with the following commands: 
+- fastapi run app.py
+- uvicorn app:app --reload --port 8000
+
 You can query the interface with a browser at 
 http://localhost:8000/query-stream/?query="Your query here"
 """
