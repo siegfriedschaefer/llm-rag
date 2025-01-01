@@ -1,0 +1,47 @@
+
+@startuml
+
+top to bottom direction
+
+package "User Interface (Browser)" {
+    node "Client" {
+        component "Dialog" as Dialog
+        interface "User Input (Text)" as InputTextfield
+        interface "Chat Output (Text)" as OutputTextfield
+    }
+}
+
+package "Backend (API)" {
+    node "Server" {
+        component "FastAPI Application" as FastAPI {
+            component "LLM Manager" as DialogManager {
+                component "llm_response_queue\nstores generated Tokens" as Queue
+                component "response_generator\nmanages lifecycle of a llm query" as GeneratorThread
+            }
+            component "LangChain Orchestrator" as LangChain {
+                interface "Token Callback API" as TokenCallbackAPI
+                interface "ChatOpenAI" as LLM_API
+            }
+            interface "/query-stream" as REST 
+
+        }
+    }
+}
+
+package "LLM Providers" {
+    node "LLM Services" {
+        component "LLMs" as LLMs
+        note right of LLMs: OpenAI, Mistral, ...
+        interface "TokenStream" as TokenStream
+    }
+}
+
+InputTextfield -- Dialog : Sends Input (Text)
+Dialog -- OutputTextfield : Updates Dialog (Text)
+Dialog -- REST : Sends Query/Response
+REST -- GeneratorThread : activates response_generator
+GeneratorThread -- Queue : Stores Tokens
+GeneratorThread -- TokenCallbackAPI : Requests Tokens
+LLM_API -- LLMs : Sends Request / Receives TokenStream
+
+@enduml
