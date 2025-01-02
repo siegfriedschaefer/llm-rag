@@ -11,21 +11,22 @@ with st.sidebar:
         This chatbot interfaces with a
         [LangChain](https://python.langchain.com/docs/get_started/introduction)
         agent designed to answer your questions.
-        The agent uses  retrieval-augment generation (RAG) over (unstructured) data which you provide.
+        - The chatbot interface with the backend API to generate answers to your questions.
+        - At the end, the chatbot will use retrieval-augment generation (RAG) over (unstructured) data which you provide.
 
-        As an example we try to answer questions about :red[__Perry Rhodan__]
+        As an example we try to answer questions about :red[__Nexus-Lumina__]
         """
     )
 
     st.header("Example Questions")
-    st.markdown("- Who is Perry Rhodan?")
+    st.markdown("- Who is AiA?")
 
 
-st.title("Nexus")
+st.title("AiA")
 
 st.info(
-    "Ask me questions about Perry's family, friends, and enemies! "
-    "Enjoy Perry's adventure!"
+    "Ask me any questions! "
+    "I try to answer them to my best knowledge!"
 )
 
 if "messages" not in st.session_state:
@@ -61,7 +62,7 @@ if prompt := st.chat_input("What do you want to know?"):
 
 #        response = requests.post(CHATBOT_API, json=data)
 
-        output_text = """At this stage of my development am not connected to any Generative AI assistant. Stay tunded!"""
+        output_text = """At this stage of my development I am not connected to any Generative AI assistant. Stay tunded!"""
         explanation = ''
 
         st.chat_message("assistant").markdown(output_text)
