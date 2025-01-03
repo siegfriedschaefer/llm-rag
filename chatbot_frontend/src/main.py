@@ -1,6 +1,6 @@
 
+import requests
 import streamlit as st
-
 
 user_avatar = "👨‍💻"
 
@@ -34,7 +34,7 @@ if "messages" not in st.session_state:
 
 for message in st.session_state.messages:
 
-#    print(message)
+    # print(message)
 
     avatar = user_avatar
 
@@ -56,25 +56,38 @@ if prompt := st.chat_input("What do you want to know?"):
 
     st.session_state.messages.append({"role": "user", "output": prompt})
 
-    data = {"text": prompt}
+    # print(f"prompt: {prompt}")
 
     with st.spinner("Searching for an answer..."):
 
-#        response = requests.post(CHATBOT_API, json=data)
+        # Send a request to initiate streaming
+        chatbot_api_url = f"http://localhost:8000/query-stream?query={prompt}"
+        response = requests.get(chatbot_api_url, stream=True)
 
-        output_text = """At this stage of my development I am not connected to any Generative AI assistant. Stay tunded!"""
-        explanation = ''
+        # Iterate over the generator and update the content dynamically
+        output_text = ""
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:
+                print(f"> {chunk}")
+                explanation = ''
+                output_text += chunk.decode("utf-8")
 
-        st.chat_message("assistant").markdown(output_text)
 
-#        st.status("How was this generated", state="complete").info(explanation)
+        # Close the response stream
+        response.close()
 
-        st.session_state.messages.append(
-            {
-                "role": "assistant",
-                "output": output_text,
-                "explanation": '',
-            }
-        )
+        st.chat_message("assistant").markdown(f'<div>{output_text}</div>', unsafe_allow_html=True)
+
+        # output_text = """At this stage of my development I am not connected to any Generative AI assistant. Stay tunded!"""
+
+        # st.status("How was this generated", state="complete").info(explanation)
+
+        # st.session_state.messages.append(
+        #    {
+        #        "role": "assistant",
+        #        "output": output_text,
+        #        "explanation": '',
+        #    }
+        #)
 
 
