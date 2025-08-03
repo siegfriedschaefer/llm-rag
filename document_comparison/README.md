@@ -1,4 +1,3 @@
-Of course, here is a more formally structured version of your `README.md` file.
 
 ***
 
