@@ -1,6 +1,4 @@
 
-***
-
 # Semantic File Comparison using LLMs
 
 ## Motivation
