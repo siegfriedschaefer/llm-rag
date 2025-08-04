@@ -6,38 +6,21 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 import faiss
 
+model_name = 'all-MiniLM-L6-v2'
 
-def extract_text_from_pdf(pdf_path):
+
+def extract_text_from_pdf(pdf_path, debug=False):
 
     full_text = ""
     with fitz.open(pdf_path) as doc:
-        i=0
         text= ""
         # 2. Iterate through each page
         for page in doc:
             # 3. Extract text from the page and append it
             text = page.get_text()
-            if text and i == 3:
-                print("==========================")
-                print(text)
-                print("==========================")
-            i += 1
+            if debug:
+                print(f"Page {page.number}: {text[:100]}...")
             full_text += text
-
-#    reader = PdfReader(pdf_path)
-
-#    i=0
-#    for page in reader.pages:
-#        # printing the text of each page
-#        text = page.extract_text()
-#        if text and i == 3:
-#            print("==========================")
-#            print(text)
-#            print("==========================")
-#        i+=1
-
-    # extracting text from each page and joining them
-#    full_text = "".join(page.extract_text() for page in reader.pages)
 
     return full_text
 
@@ -45,7 +28,7 @@ def extract_text_from_pdf(pdf_path):
 def chunk_text(full_text):
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000, 
-        chunk_overlap=150
+        chunk_overlap=100
     )
     chunks = text_splitter.split_text(full_text)
     return chunks
@@ -64,7 +47,7 @@ def main():
     print(f"Chunks from {doc1_path}: {len(chunks1)}")
     print(f"Chunks from {doc2_path}: {len(chunks2)}")
 
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = SentenceTransformer(model_name)
 
     doc_a_embeddings = model.encode(chunks1)
     doc_b_embeddings = model.encode(chunks2)
@@ -73,32 +56,45 @@ def main():
 
     print(f"Similarities.len: {len(similarities)} ")
 
-    print(f"doc_a_embeddings.shape: {doc_a_embeddings.shape}")
-    print(f"doc_b_embeddings.shape: {doc_b_embeddings.shape}")
+    print(f"doc_a has stored {doc_a_embeddings.shape[0]} chunks with {doc_a_embeddings.shape[1]} dimensions each.")
+    print(f"It's shape is therefore: {doc_a_embeddings.shape}")
+    print(f"The vector dimensions were created from the model used: {model_name}")
 
-    # Build the FAISS index for Document B
+    print(f"doc_b has stored {doc_b_embeddings.shape[0]} chunks with {doc_b_embeddings.shape[1]} dimensions each.")
+    print(f"It's shape is therefore: {doc_b_embeddings.shape}")
+    print(f"The vector dimensions were created from the model used: {model_name}")
+
+    # we are now setting up a FAISS index to search for matches between Document A and Document B
+    # We will use the L2 distance metric for this example because it is simple and effective for many use cases
+    # In practice, you might want to use a more complex index type depending on your needs.
+    print("Setting up FAISS index...")
+
+    # L2b distance search uses a brute-force search, which is simple but can be slow for large datasets.
+
+    # Create the FAISS index for Document B embeddings
     index = faiss.IndexFlatL2(doc_b_embeddings.shape[1])
     index.add(np.array(doc_b_embeddings, dtype=np.float32))
 
-    print(f"Index size: {index.ntotal}")
+    print(f"index.size: {index.ntotal}")
 
-    print(f"Index: {index.is_trained}")
+    print(f"index.is_trained {index.is_trained}")
 
     # Search for matches for each chunk of Document A
-    # D are the distances (lower is better), I are the indices
+    
 
-    ndistances, matched_indices_in_b = index.search(np.array(doc_a_embeddings[93:94], dtype=np.float32), 1)
+    kNearest = 3
+    print(f"Searching for {kNearest} nearest neighbors in Document B")
+    mdistances, mindices = index.search(doc_a_embeddings[0:1], kNearest)
 
-    print(f"Matched indices in Document B: {matched_indices_in_b}:{ndistances}") 
+    print(f"Matched indices in Document B:")
+    print(f"{mindices}")
+    print(f"Distances:")
+    print(f"{mdistances}")
 
     # Keep track of which Doc B chunks have been matched
-    matched_b_chunks = set(matched_indices_in_b.flatten())
+    # matched_b_chunks = set(matched_indices.flatten())
 
     # Find all matched chunks in Document B
-    print(f"{chunks1[93:94]}")
-    print("----------------------")
-    print(f"{chunks2[80]}")
-    print(f"Matched chunks in Document B: {len(matched_b_chunks)}")
 
 if __name__ == "__main__":
     main()

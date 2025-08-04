@@ -34,4 +34,3 @@ mdistances, mindices = index.search(doc_a_embeddings[0:1], kNearest)
 Given the findings, the project will proceed using the **`fitz`** library for all document parsing and text extraction tasks.
 
 ### Vector Database / Search
-I will first use FAISS to proceed further, even with it's unreliabilities on my Macbook Pro. I will try the code on bigger machines later.
