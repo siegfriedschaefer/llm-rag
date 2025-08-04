@@ -13,6 +13,7 @@ It quickly became apparent that the initial assumption was wrong. The primary ch
 
 ## Findings
 
+### Document Parsing
 Several libraries were evaluated for document parsing, with the following observations:
 
 * **Finding a suitable local Python module for reading complex documents is non-trivial.**
@@ -20,7 +21,17 @@ Several libraries were evaluated for document parsing, with the following observ
 * **`fitz` (PyMuPDF)**: This library provided the best results out of the box, handling the documents with greater accuracy.
 * **`LlamaIndex`**: This library was considered, but its dependency on `nltk` (and its subsequent dependencies) presented a setup overhead that was too time-consuming for the initial phase of this project.
 
+### Vector Database / Search
+
+* **`faiss`**: Meta's (Facebook) Facebook AI Similarity Search seemed promising, but proved to be not reliable enough on my MacBook Pro M4 16G. Using slightly larger search sets tend to let faiss not halting at my Macbook Pro.
+
+* ***`what works`***
+mdistances, mindices = index.search(doc_a_embeddings[0:1], kNearest)
+
 ## Decision
 
+### Document Parsing 
 Given the findings, the project will proceed using the **`fitz`** library for all document parsing and text extraction tasks.
 
+### Vector Database / Search
+I will first use FAISS to proceed further, even with it's unreliabilities on my Macbook Pro. I will try the code on bigger machines later.
