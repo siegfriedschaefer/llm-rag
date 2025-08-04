@@ -30,3 +30,14 @@ print(index.is_trained)
 # add vectors to the index
 index.add(data_set)
 print(index.ntotal)
+
+# find the k nearest neighbors, use data_set as query for a test
+kNearest = 5
+distances, searchIndex = index.search(data_set[:5], kNearest)
+print(searchIndex)
+print(distances)
+
+# find the k nearest neighbors, use query_set now
+distances, searchIndex = index.search(query_set, kNearest)
+print(searchIndex[:5])
+print(distances)
