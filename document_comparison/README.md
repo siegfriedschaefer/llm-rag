@@ -28,7 +28,9 @@ Several libraries were evaluated for document parsing, with the following observ
 what works was just one embedding in the query set.
 mdistances, mindices = index.search(doc_a_embeddings[0:1], kNearest)
 
-* **`chroma`**: Chroma works out of the box and I could make a query using all of the documents chunks on my Macbook Pro.
+* **`chroma`**: Chroma works out of the box and I could make a query using all of the documents A chunks on my Macbook Pro.
+Executing a kNearest(3) search between all of my 88x384 input chunks of document A in the 122x384 chunks of document B tooks
+only 0.0111 seconds. Something faiss couldn't accomplish at all on my Macbook Pro.
 I will gave them a 10 star! 
 
 ## Decision

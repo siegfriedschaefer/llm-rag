@@ -1,3 +1,5 @@
+import time
+
 import fitz
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
@@ -85,20 +87,29 @@ def main():
 #    for i, embedding in enumerate(doc_b_embeddings):
 #        collection.add(embedding, metadata={"chunk_index": i, "document": "B"})
 
+    # Search for matches for each chunk of Document A
+
+
     kNearest = 3
     print(f"Searching for {kNearest} nearest neighbors in Document B")
+
+
+    start_time = time.perf_counter()
+
     results = collection.query(doc_a_embeddings, n_results=kNearest)
 
+    end_time = time.perf_counter()
+    # --- Calculation ---
+
+    elapsed_time = end_time - start_time
+    print(f"Execution time: {elapsed_time:.4f} seconds")
+
     print(f"Matched indices in Document B:")
-    print(f"{results['ids']}")
+    print(f"{results['ids'][:1]}")
 
     print(f"Distances:")
-    print(f"{results['distances']}")
+    print(f"{results['distances'][:1]}")
 
-    # Keep track of which Doc B chunks have been matched
-    # matched_b_chunks = set(matched_indices.flatten())
-
-    # Find all matched chunks in Document B
 
 if __name__ == "__main__":
     main()
