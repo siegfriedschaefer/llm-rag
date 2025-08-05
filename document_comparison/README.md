@@ -25,8 +25,11 @@ Several libraries were evaluated for document parsing, with the following observ
 
 * **`faiss`**: Meta's (Facebook) Facebook AI Similarity Search seemed promising, but proved to be not reliable enough on my MacBook Pro M4 16G. Using slightly larger search sets tend to let faiss not halting at my Macbook Pro.
 
-* ***`what works`***
+what works was just one embedding in the query set.
 mdistances, mindices = index.search(doc_a_embeddings[0:1], kNearest)
+
+* **`chroma`**: Chroma works out of the box and I could make a query using all of the documents chunks on my Macbook Pro.
+I will gave them a 10 star! 
 
 ## Decision
 
@@ -34,3 +37,4 @@ mdistances, mindices = index.search(doc_a_embeddings[0:1], kNearest)
 Given the findings, the project will proceed using the **`fitz`** library for all document parsing and text extraction tasks.
 
 ### Vector Database / Search
+I will further investigating Chroma.
